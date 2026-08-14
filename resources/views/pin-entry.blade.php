@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree Access | Uy-Malmis Clan</title>
+    @vite(['resources/css/app.css'])
+</head>
+<body class="auth-page">
+    <main class="auth-card">
+        <div class="auth-brand"><span>家</span> Uy-Malmis Clan</div>
+        <p class="eyebrow">FAMILY TREE ACCESS</p>
+        <h1>Welcome, family.</h1>
+        <p class="auth-copy">Enter the six-digit access PIN shared with you by the Uy-Malmis Clan.</p>
+        <form method="POST" action="{{ route('pin.verify') }}" class="auth-form">
+            @csrf
+            <label>Access PIN <input name="pin" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required autofocus placeholder="••••••"></label>
+            @error('pin')<p class="form-error">{{ $message }}</p>@enderror
+            <button type="submit">View family tree</button>
+        </form>
+        <p class="auth-switch"><a href="{{ route('login') }}">Sign in as a clan member</a></p>
+    </main>
+</body>
+</html>
