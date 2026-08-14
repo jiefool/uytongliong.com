@@ -17,4 +17,13 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    jointjs: ['@joint/core'],
+                },
+            },
+        },
+    },
 });
