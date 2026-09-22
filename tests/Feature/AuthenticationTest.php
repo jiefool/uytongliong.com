@@ -12,7 +12,7 @@ class AuthenticationTest extends TestCase
 
     public function test_guests_can_view_the_homepage_but_the_tree_requires_login(): void
     {
-        $this->get('/')->assertOk()->assertSee('Uy-Malmis Clan');
+        $this->get('/')->assertOk()->assertSee('Uy Tong Liong');
         $this->get('/family-tree')->assertRedirect('/login');
     }
 

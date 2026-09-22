@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clan Events | Uy-Malmis Clan</title>
+    <title>Clan Events | Uy Tong Liong</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="message-page">
@@ -12,12 +12,12 @@
         <p class="eyebrow">CLAN CALENDAR · 家</p>
         <span class="message-seal">慶</span>
         <h1>Clan<br><em>Events</em></h1>
-        <p class="message-copy">Keep the Uy-Malmis Clan connected by recording reunions, birthdays, gatherings, and milestones.</p>
+        <p class="message-copy">Keep Uy Tong Liong connected by recording reunions, birthdays, gatherings, and milestones.</p>
         @if (session('status'))<p class="message-status">{{ session('status') }}</p>@endif
 
         <form class="message-form" method="POST" enctype="multipart/form-data" action="{{ $editingEvent ? route('events.update', $editingEvent) : route('events.store') }}">
             @csrf @if ($editingEvent) @method('PUT') @endif
-            <label>Event title <input name="title" value="{{ old('title', $editingEvent?->title) }}" required placeholder="Uy-Malmis Family Reunion"></label>
+            <label>Event title <input name="title" value="{{ old('title', $editingEvent?->title) }}" required placeholder="Uy Tong Liong Family Reunion"></label>
             <div class="field-row"><label>Date <input name="event_date" type="date" value="{{ old('event_date', $editingEvent?->event_date?->format('Y-m-d')) }}" required></label><label>Location <input name="location" value="{{ old('location', $editingEvent?->location) }}" placeholder="City or venue"></label></div>
             <label>Event poster <input class="image-input" name="poster_image" type="file" accept="image/*"></label>
             @if ($editingEvent?->poster_image_path)<div class="event-poster-preview"><img src="{{ asset('storage/'.$editingEvent->poster_image_path) }}" alt="Current event poster"><span>Current event poster</span></div>@endif

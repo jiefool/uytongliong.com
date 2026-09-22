@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="is-admin" content="{{ auth()->user()?->isAdmin() ? 'true' : 'false' }}">
     <meta name="is-pin-viewer" content="{{ !empty($pinViewer) ? 'true' : 'false' }}">
-    <title>Uy-Malmis Clan | Family Tree</title>
+    <title>Uy Tong Liong | Family Tree</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>

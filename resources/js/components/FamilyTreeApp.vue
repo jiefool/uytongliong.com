@@ -368,11 +368,11 @@ watch(members, () => nextTick(renderFamilyGraph), { deep: true });
 <template>
     <main class="shell">
         <header class="hero">
-            <div class="brand"><span class="brand-mark">家</span> Uy-Malmis Clan</div>
+            <div class="brand"><span class="brand-mark">家</span> Uy Tong Liong</div>
             <div class="hero-copy">
-                <p class="eyebrow">UY-MALMIS CLAN · 家</p>
+                <p class="eyebrow">UY TONG LIONG · 家</p>
                 <h1>Honoring our roots,<br><em>growing our legacy.</em></h1>
-                <p>A living record of the Uy-Malmis family, across every generation.</p>
+                <p>A living record of the Uy Tong Liong family, across every generation.</p>
             </div>
             <nav class="header-menu" aria-label="Clan navigation">
                 <a v-if="isAdmin" href="/users"><span>管</span> Manage users</a>

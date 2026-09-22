@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management | Uy-Malmis Clan</title>
+    <title>User Management | Uy Tong Liong</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="message-page">
@@ -12,7 +12,7 @@
         <p class="eyebrow">ADMINISTRATION · 家</p>
         <span class="message-seal">管</span>
         <h1>User<br><em>Management</em></h1>
-        <p class="message-copy">Create and manage the accounts that help preserve the Uy-Malmis family history.</p>
+        <p class="message-copy">Create and manage the accounts that help preserve the Uy Tong Liong family history.</p>
         @if (session('status'))<p class="message-status">{{ session('status') }}</p>@endif
 
         <form class="message-form" method="POST" action="{{ $editingUser ? route('users.update', $editingUser) : route('users.store') }}">

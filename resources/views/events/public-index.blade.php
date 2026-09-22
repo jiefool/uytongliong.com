@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clan Events | Uy-Malmis Clan</title>
+    <title>Clan Events | Uy Tong Liong</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="message-page">
     <main class="message-card users-card">
         <a class="back-link" href="{{ route('home') }}">← Back to homepage</a>
-        <p class="eyebrow">UY-MALMIS CLAN · 家</p>
+        <p class="eyebrow">UY TONG LIONG · 家</p>
         <span class="message-seal">慶</span>
         <h1>Clan<br><em>Events</em></h1>
-        <p class="message-copy">Reunions, celebrations, and milestones shared by the Uy-Malmis Clan.</p>
+        <p class="message-copy">Reunions, celebrations, and milestones shared by Uy Tong Liong.</p>
         <section class="message-archive public-events" aria-label="Clan events">
             <div class="message-rule"></div>
             <p class="eyebrow">EVENT CALENDAR · {{ $events->count() }}</p>

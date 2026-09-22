@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message to Next Generations | Uy-Malmis Clan</title>
+    <title>Message to Next Generations | Uy Tong Liong</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="message-page">
     <main class="message-card">
         <a class="back-link" href="{{ !empty($pinViewer) ? route('pin.tree') : route('family-tree') }}">← Back to family tree</a>
-        <p class="eyebrow">UY-MALMIS CLAN · 家</p>
+        <p class="eyebrow">UY TONG LIONG · 家</p>
         <span class="message-seal">傳</span>
         <h1>Message to<br><em>Next Generations</em></h1>
-        <p class="message-copy">Preserve the wisdom, love, and stories you want future Uy-Malmis generations to carry forward.</p>
+        <p class="message-copy">Preserve the wisdom, love, and stories you want future Uy Tong Liong generations to carry forward.</p>
 
         @if (!empty($pinViewer))<p class="viewer-note">View-only family archive</p>@endif
         @if (session('status'))<p class="message-status">{{ session('status') }}</p>@endif

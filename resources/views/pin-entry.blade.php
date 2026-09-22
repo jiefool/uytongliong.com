@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Tree Access | Uy-Malmis Clan</title>
+    <title>Family Tree Access | Uy Tong Liong</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="auth-page">
     <main class="auth-card">
-        <div class="auth-brand"><span>家</span> Uy-Malmis Clan</div>
+        <div class="auth-brand"><span>家</span> Uy Tong Liong</div>
         <p class="eyebrow">FAMILY TREE ACCESS</p>
         <h1>Welcome, family.</h1>
-        <p class="auth-copy">Enter the six-digit access PIN shared with you by the Uy-Malmis Clan.</p>
+        <p class="auth-copy">Enter the six-digit access PIN shared with you by Uy Tong Liong.</p>
         <form method="POST" action="{{ route('pin.verify') }}" class="auth-form">
             @csrf
             <label>Access PIN <input name="pin" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required autofocus placeholder="••••••"></label>
