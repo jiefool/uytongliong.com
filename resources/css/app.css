@@ -212,8 +212,8 @@ input, select { border-color: #d7be87; background: #fffdf6; color: #531014; outl
 .living-tree-zoom button:disabled { opacity: .5; cursor: default; }
 .living-tree-zoom output { min-width: 48px; color: #fff7df; text-align: center; font: 700 12px Manrope, sans-serif; }
 .living-tree-zoom .living-tree-zoom-reset { padding: 4px 10px; font-size: 11px; }
-.living-tree-scroll { overflow: auto; max-height: min(78vh, 900px); border: 2px solid #d8b763; box-shadow: 0 22px 60px #27040655; }
-.living-tree-zoom-stage { position: relative; }
+.living-tree-scroll { overflow: auto; max-height: min(78vh, 900px); border: 2px solid #d8b763; background: #f7efd9; box-shadow: 0 22px 60px #27040655; }
+.living-tree-zoom-stage { position: relative; margin-inline: auto; }
 .living-tree-board { position: relative; transform-origin: top left; background-color: #f7efd9; background-image: radial-gradient(#ad915c36 1px, transparent 1px), radial-gradient(ellipse at 50% 100%, #e8d3a855, transparent 60%); background-size: 27px 27px, 100% 100%; color: #352d21; }
 .living-tree-limbs { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .living-limb { fill: none; stroke: #825137; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(1px 2px 1px #4c332633); }

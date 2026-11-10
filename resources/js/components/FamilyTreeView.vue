@@ -123,13 +123,14 @@ async function setZoom(value) {
     if (nextZoom === zoom.value) return;
 
     const scroller = treeScroller.value;
-    const centerX = scroller ? (scroller.scrollLeft + scroller.clientWidth / 2) / zoom.value : 0;
+    const horizontalInset = (scale) => scroller ? Math.max(0, (scroller.clientWidth - layout.value.width * scale) / 2) : 0;
+    const centerX = scroller ? (scroller.scrollLeft + scroller.clientWidth / 2 - horizontalInset(zoom.value)) / zoom.value : 0;
     const centerY = scroller ? (scroller.scrollTop + scroller.clientHeight / 2) / zoom.value : 0;
     zoom.value = nextZoom;
     await nextTick();
 
     if (scroller) {
-        scroller.scrollLeft = centerX * nextZoom - scroller.clientWidth / 2;
+        scroller.scrollLeft = centerX * nextZoom + horizontalInset(nextZoom) - scroller.clientWidth / 2;
         scroller.scrollTop = centerY * nextZoom - scroller.clientHeight / 2;
     }
 }
