@@ -69,24 +69,31 @@ const layout = computed(() => {
     const limbs = [];
     const baseLimbs = [];
     const leaves = [];
+    const leafColors = ['#708d49', '#8ba95f', '#a0b96c', '#627f43', '#b2c77b'];
+    const addLeaf = (key, x, y, rotation, index) => {
+        if (x < 10 || x > width - 10 || y < 10 || y > height - 10) return;
+        leaves.push({ key, x, y, rotation, color: leafColors[index % leafColors.length], rx: 8 + (index % 3) * 2, ry: 3.5 + (index % 2) });
+    };
+    const cubic = (start, controlA, controlB, end, t) => ((1 - t) ** 3 * start) + (3 * (1 - t) ** 2 * t * controlA) + (3 * (1 - t) * t ** 2 * controlB) + (t ** 3 * end);
 
     function place(tree, left, depth, parent = null) {
         const node = { key: tree.key, people: tree.people, x: left + tree.width / 2, y: 150 + (maxDepth - depth) * 230, depth, isLeaf: !tree.children.length };
         nodes.push(node);
-        const leafCount = node.isLeaf ? 24 : depth === 0 ? 10 : 16;
+        const leafCount = node.isLeaf ? 44 : depth === 0 ? 14 : 28;
         for (let index = 0; index < leafCount; index++) {
             const angle = index * 2.39996 + node.key * 0.37;
-            const radius = 96 + (index % 5) * 17;
-            leaves.push({
-                key: `${node.key}-${index}`,
-                x: node.x + Math.cos(angle) * radius,
-                y: node.y + 60 + Math.sin(angle) * (56 + (index % 4) * 15),
-                rotation: (angle * 180 / Math.PI + 42) % 180,
-                color: ['#708d49', '#8ba95f', '#a0b96c', '#627f43'][index % 4],
-            });
+            const radius = 92 + (index % 8) * 14;
+            addLeaf(`node-${node.key}-${index}`, node.x + Math.cos(angle) * radius, node.y + 60 + Math.sin(angle) * (62 + (index % 6) * 14), (angle * 180 / Math.PI + 42) % 180, index);
         }
         if (parent) {
             limbs.push({ key: `${parent.key}-${node.key}`, width: Math.max(7, 18 - depth * 3), path: `M ${parent.x} ${parent.y + 28} C ${parent.x} ${parent.y - 75}, ${node.x} ${node.y + 205}, ${node.x} ${node.y + 132}` });
+            for (let index = 0; index < 14; index++) {
+                const t = 0.16 + index * 0.05;
+                const side = (index % 2 ? 1 : -1) * (16 + (index % 3) * 9);
+                const x = cubic(parent.x, parent.x, node.x, node.x, t) + side;
+                const y = cubic(parent.y + 28, parent.y - 75, node.y + 205, node.y + 132, t) + ((index % 3) - 1) * 16;
+                addLeaf(`limb-${parent.key}-${node.key}-${index}`, x, y, (index * 37 + node.key * 9) % 180, index + node.key);
+            }
         } else {
             baseLimbs.push({ key: node.key, path: `M ${width / 2} ${height - 8} C ${width / 2} ${height - 105}, ${node.x} ${node.y + 195}, ${node.x} ${node.y + 132}` });
         }
@@ -177,7 +184,7 @@ onMounted(async () => {
                 <div class="living-tree-zoom-stage" :style="{ width: `${layout.width * zoom}px`, height: `${layout.height * zoom}px` }">
                 <div class="living-tree-board" :style="{ width: `${layout.width}px`, height: `${layout.height}px`, transform: `scale(${zoom})` }">
                     <svg class="living-tree-limbs" :viewBox="`0 0 ${layout.width} ${layout.height}`" aria-hidden="true">
-                        <ellipse v-for="leaf in layout.leaves" :key="leaf.key" :cx="leaf.x" :cy="leaf.y" rx="10" ry="4.5" :transform="`rotate(${leaf.rotation} ${leaf.x} ${leaf.y})`" :fill="leaf.color" opacity=".86" />
+                        <ellipse v-for="leaf in layout.leaves" :key="leaf.key" :cx="leaf.x" :cy="leaf.y" :rx="leaf.rx" :ry="leaf.ry" :transform="`rotate(${leaf.rotation} ${leaf.x} ${leaf.y})`" :fill="leaf.color" opacity=".86" />
                         <path v-for="limb in layout.baseLimbs" :key="`root-${limb.key}`" :d="limb.path" class="living-limb living-limb-base" />
                         <path v-for="limb in layout.limbs" :key="limb.key" :d="limb.path" class="living-limb" :stroke-width="limb.width" />
                     </svg>
