@@ -24,6 +24,9 @@
             @if ($myRsvp)<p>Your response: <strong>{{ ['going' => 'Going', 'maybe' => 'Maybe', 'declined' => 'Not going'][$myRsvp->response] }}</strong></p>@endif
             @if ($event->acceptsRsvps())
                 @auth
+                    @if (auth()->user()->isFamilyAdmin())
+                        <p class="event-field-help">Family Admin accounts can view events but cannot RSVP.</p>
+                    @else
                     <form class="event-rsvp-form" method="POST" action="{{ route('events.rsvp', $event) }}">
                         @csrf
                         @foreach (['going' => 'Going', 'maybe' => 'Maybe', 'declined' => 'Not going'] as $value => $label)
@@ -31,6 +34,7 @@
                         @endforeach
                     </form>
                     <p class="event-field-help">You can change your response while RSVPs are open. Your name and response are visible to the organizer and admins.</p>
+                    @endif
                 @else
                     <a class="public-manage-link" href="{{ route('login') }}">Sign in to RSVP</a>
                 @endauth

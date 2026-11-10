@@ -8,7 +8,7 @@
 </head>
 <body class="message-page">
     <main class="message-card users-card">
-        <nav class="event-navigation"><a href="{{ route('home') }}">← Homepage</a>@auth<a href="{{ route('events.index') }}">Manage events →</a>@endauth</nav>
+        <nav class="event-navigation"><a href="{{ route('home') }}">← Homepage</a>@if (auth()->check() && ! auth()->user()->isFamilyAdmin())<a href="{{ route('events.index') }}">Manage events →</a>@endif</nav>
         <p class="eyebrow">UY TONG LIONG - LOO SIOK TIN · 家</p>
         <span class="message-seal">慶</span>
         <h1>Clan<br><em>Events</em></h1>

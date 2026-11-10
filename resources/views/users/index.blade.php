@@ -20,7 +20,8 @@
             @if ($editingUser) @method('PUT') @endif
             <label>Full name <input name="name" value="{{ old('name', $editingUser?->name) }}" required></label>
             <label>Email address <input name="email" type="email" value="{{ old('email', $editingUser?->email) }}" required></label>
-            <label>Role <select name="role" required><option value="secretariat" @selected(old('role', $editingUser?->role) === 'secretariat')>Secretariat</option><option value="admin" @selected(old('role', $editingUser?->role) === 'admin')>Admin</option></select></label>
+            <label>Role <select name="role" required><option value="secretariat" @selected(old('role', $editingUser?->role) === 'secretariat')>Secretariat</option><option value="family_admin" @selected(old('role', $editingUser?->role) === 'family_admin')>Family Admin</option><option value="admin" @selected(old('role', $editingUser?->role) === 'admin')>Admin</option></select></label>
+            <p class="message-upload-hint">Family Admins can add family members and edit only the members they added. They cannot delete members or manage other site content.</p>
             <label>{{ $editingUser ? 'New password (optional)' : 'Password' }} <input name="password" type="password" {{ $editingUser ? '' : 'required' }}></label>
             <label>Password confirmation <input name="password_confirmation" type="password" {{ $editingUser ? '' : 'required' }}></label>
             @if ($errors->any())<p class="form-error">{{ $errors->first() }}</p>@endif
@@ -33,7 +34,7 @@
             <p class="eyebrow">USER ACCOUNTS · {{ $users->count() }}</p>
             @foreach ($users as $user)
                 <article class="archive-message user-row">
-                    <div class="archive-message-heading"><div><h2>{{ $user->name }}</h2><p>{{ $user->email }}</p></div><span class="role-badge {{ $user->role }}">{{ ucfirst($user->role) }}</span></div>
+                    <div class="archive-message-heading"><div><h2>{{ $user->name }}</h2><p>{{ $user->email }}</p></div><span class="role-badge {{ $user->role }}">{{ ucwords(str_replace('_', ' ', $user->role)) }}</span></div>
                     <div class="message-actions"><a href="{{ route('users.edit', $user) }}">Edit</a>@if (! $user->is(auth()->user()))<form method="POST" action="{{ route('users.destroy', $user) }}">@csrf @method('DELETE')<button type="submit">Delete</button></form>@endif</div>
                 </article>
             @endforeach

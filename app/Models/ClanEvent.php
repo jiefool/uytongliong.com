@@ -51,7 +51,7 @@ class ClanEvent extends Model
 
     public function canManage(?User $user): bool
     {
-        return $user && ($user->isAdmin() || $user->id === $this->user_id);
+        return $user && ! $user->isFamilyAdmin() && ($user->isAdmin() || $user->id === $this->user_id);
     }
 
     public function acceptsRsvps(): bool

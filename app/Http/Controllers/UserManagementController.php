@@ -66,7 +66,7 @@ class UserManagementController extends Controller
         return $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user)],
-            'role' => ['required', Rule::in(['admin', 'secretariat'])],
+            'role' => ['required', Rule::in(['admin', 'secretariat', 'family_admin'])],
             'password' => [$creating ? 'required' : 'nullable', 'confirmed', Password::min(8)],
         ]);
     }

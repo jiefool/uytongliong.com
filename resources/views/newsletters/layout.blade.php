@@ -10,7 +10,15 @@
     <main class="message-card newsletter-shell @yield('shell-class')">
         <nav class="newsletter-nav" aria-label="Newsletter navigation">
             <a href="{{ route('home') }}">← Homepage</a>
-            <div><a href="{{ route('newsletters.public') }}">Read newsletters</a>@auth<a href="{{ route('newsletters.index') }}">Manage newsletters</a><a href="{{ route('family-tree') }}">Family tree</a>@endauth</div>
+            <div>
+                <a href="{{ route('newsletters.public') }}">Read newsletters</a>
+                @auth
+                    @if (! auth()->user()->isFamilyAdmin())
+                        <a href="{{ route('newsletters.index') }}">Manage newsletters</a>
+                    @endif
+                    <a href="{{ route('family-tree') }}">Family tree</a>
+                @endauth
+            </div>
         </nav>
         @if (session('status'))<p class="newsletter-notice" role="status">{{ session('status') }}</p>@endif
         @yield('content')

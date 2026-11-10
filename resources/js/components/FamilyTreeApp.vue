@@ -15,6 +15,7 @@ let familyPaper = null;
 let graphDimensions = { width: 0, height: 0 };
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 const isAdmin = document.querySelector('meta[name="is-admin"]')?.content === 'true';
+const isFamilyAdmin = document.querySelector('meta[name="is-family-admin"]')?.content === 'true';
 const isPinViewer = document.querySelector('meta[name="is-pin-viewer"]')?.content === 'true';
 const form = reactive({
     first_name: '', last_name: '', birth_date: '', gender: '', life_status: 'alive', profile_image: null, parent_id: '', secondary_parent_id: '', spouse_id: '', address: '',
@@ -23,7 +24,7 @@ const form = reactive({
 
 const fullName = (member) => [member.first_name, member.last_name].filter(Boolean).join(' ');
 const isEditing = computed(() => selectedMemberId.value !== null);
-const availableSpouses = computed(() => members.value.filter(member => member.id !== selectedMemberId.value && (!member.spouse_id || member.id === Number(form.spouse_id))));
+const availableSpouses = computed(() => members.value.filter(member => member.id !== selectedMemberId.value && (!member.spouse_id || member.id === Number(form.spouse_id)) && (!isFamilyAdmin || member.can_edit || member.id === Number(form.spouse_id))));
 const availableSecondaryParents = computed(() => members.value.filter(member => member.id !== Number(form.parent_id)));
 
 function setChartZoom(nextZoom) {
@@ -43,6 +44,7 @@ function resetForm() {
 }
 
 function editMember(member) {
+    if (!member.can_edit) return;
     selectedMemberId.value = member.id;
     error.value = '';
     Object.assign(form, {
@@ -211,7 +213,7 @@ function renderFamilyGraph() {
         familyPaper = new dia.Paper({ el: host, model: familyGraph, width: graphWidth * chartZoom.value, height: graphHeight * chartZoom.value, gridSize: 1, async: false, interactive: { elementMove: false, addLinkFromMagnet: false } });
         familyPaper.on('element:pointerclick', (view) => {
             const member = members.value.find(person => person.id === view.model.get('memberId'));
-            if (member) editMember(member);
+            if (member?.can_edit) editMember(member);
         });
     }
     familyPaper.scale(chartZoom.value, chartZoom.value);
@@ -263,7 +265,7 @@ function renderFamilyGraph() {
                         profileImage: { xlinkHref: profileImage, opacity: profileImage ? 1 : 0 },
                         initial: { text: (member.first_name || '?').charAt(0).toUpperCase(), opacity: profileImage ? 0 : 1 },
                         name: { text: fullName(member) || 'Family member' },
-                        details: { text: `${member.birth_date ? new Date(member.birth_date).getFullYear() : 'Family member'} · ${deceased ? 'Deceased' : 'Alive'}`, fill: deceased ? '#9a6a63' : '#438653' },
+                        details: { text: `${member.birth_date ? new Date(member.birth_date).getFullYear() : 'Family member'} · ${deceased ? 'Deceased' : 'Alive'}${isFamilyAdmin && !member.can_edit ? ' · View only' : ''}`, fill: deceased ? '#9a6a63' : '#438653' },
                     });
                     cards.set(member.id, { card, x, y });
                     cells.push(card);
@@ -307,7 +309,7 @@ async function saveMember() {
     try {
         const payload = new FormData();
         Object.entries(form).forEach(([key, value]) => {
-            if (value !== null && value !== '') payload.append(key, value);
+            if (value !== null && (value !== '' || (isEditing.value && ['parent_id', 'secondary_parent_id', 'spouse_id'].includes(key)))) payload.append(key, value);
         });
         if (isEditing.value) payload.append('_method', 'PUT');
         const response = await fetch(isEditing.value ? `/members/${selectedMemberId.value}` : '/members', {
@@ -376,7 +378,7 @@ watch(members, () => nextTick(renderFamilyGraph), { deep: true });
             </div>
             <nav class="header-menu" aria-label="Clan navigation">
                 <a v-if="isAdmin" href="/users"><span>管</span> Manage users</a>
-                <template v-if="!isPinViewer"><a href="/events"><span>慶</span> Clan events</a><a href="/newsletters"><span>書</span> Newsletters</a><a href="/access-pins"><span>鑰</span> View access PINs</a><a class="header-message-link" href="/message-to-next-generations"><span>傳</span> Message to Next Generations</a><form method="POST" action="/logout"><input name="_token" type="hidden" :value="csrfToken"><button type="submit">Sign out</button></form></template>
+                <template v-if="!isPinViewer"><a href="/events"><span>慶</span> Clan events</a><a href="/newsletters"><span>書</span> Newsletters</a><a v-if="!isFamilyAdmin" href="/access-pins"><span>鑰</span> View access PINs</a><a v-if="!isFamilyAdmin" class="header-message-link" href="/message-to-next-generations"><span>傳</span> Message to Next Generations</a><form method="POST" action="/logout"><input name="_token" type="hidden" :value="csrfToken"><button type="submit">Sign out</button></form></template>
                 <template v-else><a class="header-message-link" href="/view/messages"><span>傳</span> Message to Next Generations</a><form method="POST" action="/view/leave"><input name="_token" type="hidden" :value="csrfToken"><button type="submit">Exit view</button></form></template>
             </nav>
         </header>
@@ -416,9 +418,9 @@ watch(members, () => nextTick(renderFamilyGraph), { deep: true });
                     <p v-if="error" class="form-error">{{ error }}</p>
                     <button :disabled="saving"><span>{{ isEditing ? '✓' : '＋' }}</span> {{ saving ? 'Saving…' : (isEditing ? 'Save changes' : 'Add to family tree') }}</button>
                     <button v-if="isEditing" class="secondary-button" type="button" @click="resetForm">Cancel editing</button>
-                    <button v-if="isEditing" class="delete-member-button" type="button" :disabled="deleting" @click="deleteMember">{{ deleting ? 'Deleting…' : 'Delete family member' }}</button>
+                    <button v-if="isEditing && !isFamilyAdmin" class="delete-member-button" type="button" :disabled="deleting" @click="deleteMember">{{ deleting ? 'Deleting…' : 'Delete family member' }}</button>
                 </form>
-                <p class="hint">Choose up to two parents to connect this person to the family branch.</p>
+                <p class="hint">{{ isFamilyAdmin ? 'You can add family members and edit the members you added. Choose up to two parents to place a new member on the tree.' : 'Choose up to two parents to connect this person to the family branch.' }}</p>
             </aside>
 
             <section class="tree-panel" :class="{ 'viewer-tree-panel': isPinViewer }">

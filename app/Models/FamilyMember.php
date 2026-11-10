@@ -16,11 +16,12 @@ class FamilyMember extends Model
         'address', 'google_maps_url', 'facebook_url', 'instagram_url', 'tiktok_url', 'x_url', 'spouse_id',
         'profile_image_path',
         'contact_number', 'email',
+        'created_by_user_id',
     ];
 
     protected function casts(): array
     {
-        return ['birth_date' => 'date'];
+        return ['birth_date' => 'date', 'created_by_user_id' => 'integer'];
     }
 
     public function parent(): BelongsTo
@@ -41,5 +42,10 @@ class FamilyMember extends Model
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id')->orderBy('birth_date');
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by_user_id');
     }
 }

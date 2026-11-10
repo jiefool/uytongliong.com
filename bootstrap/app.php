@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureFamilyTreeAccess;
 use App\Http\Middleware\EnsureTreePinAccess;
+use App\Http\Middleware\EnsureUserCanManageSiteContent;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -18,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => EnsureUserIsAdmin::class,
             'tree.access' => EnsureFamilyTreeAccess::class,
             'tree.pin' => EnsureTreePinAccess::class,
+            'site.content' => EnsureUserCanManageSiteContent::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

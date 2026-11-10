@@ -11,26 +11,37 @@ use Illuminate\Validation\Rule;
 
 class FamilyMemberController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return response()->json(FamilyMember::query()
+        $user = $request->user();
+        $members = FamilyMember::query()
             ->orderBy('last_name')
             ->orderBy('first_name')
-            ->get());
+            ->get();
+
+        $members->each(function (FamilyMember $member) use ($user) {
+            $member->setAttribute('can_edit', (bool) $user && (! $user->isFamilyAdmin() || $member->created_by_user_id === $user->id));
+        });
+
+        return response()->json($members);
     }
 
     public function store(Request $request): JsonResponse
     {
         $validated = $this->validatedData($request);
-        $this->storeProfileImage($request, $validated);
+        $user = $request->user();
 
         if (isset($validated['spouse_id'])) {
             $spouse = FamilyMember::findOrFail($validated['spouse_id']);
+            abort_if($user->isFamilyAdmin() && $spouse->created_by_user_id !== $user->id, 403);
 
             if ($spouse->spouse_id) {
                 return response()->json(['message' => 'This family member already has a spouse selected.'], 422);
             }
         }
+
+        $this->storeProfileImage($request, $validated);
+        $validated['created_by_user_id'] = $user->id;
 
         $member = DB::transaction(function () use ($validated) {
             $member = FamilyMember::create($validated);
@@ -48,32 +59,42 @@ class FamilyMemberController extends Controller
     public function update(Request $request, FamilyMember $member): JsonResponse
     {
         $validated = $this->validatedData($request);
-        $this->storeProfileImage($request, $validated);
-        $newSpouseId = $validated['spouse_id'] ?? null;
+        $user = $request->user();
+        abort_if($user->isFamilyAdmin() && $member->created_by_user_id !== $user->id, 403);
+        $oldSpouseId = (int) $member->spouse_id;
+        $newSpouseId = array_key_exists('spouse_id', $validated) ? ($validated['spouse_id'] ? (int) $validated['spouse_id'] : null) : ($oldSpouseId ?: null);
+
+        if ($user->isFamilyAdmin() && $newSpouseId !== ($oldSpouseId ?: null)) {
+            foreach (array_filter([$oldSpouseId, $newSpouseId]) as $spouseId) {
+                abort_unless(FamilyMember::whereKey($spouseId)->where('created_by_user_id', $user->id)->exists(), 403);
+            }
+        }
 
         if ($newSpouseId === $member->id) {
             return response()->json(['message' => 'A family member cannot be their own spouse.'], 422);
         }
 
-        if (in_array($member->id, [$validated['parent_id'] ?? null, $validated['secondary_parent_id'] ?? null], true)) {
+        if (in_array($member->id, array_map('intval', [$validated['parent_id'] ?? 0, $validated['secondary_parent_id'] ?? 0]), true)) {
             return response()->json(['message' => 'A family member cannot be their own parent.'], 422);
         }
 
-        if ($newSpouseId && $newSpouseId !== $member->spouse_id) {
+        if ($newSpouseId && $newSpouseId !== $oldSpouseId) {
             $newSpouse = FamilyMember::findOrFail($newSpouseId);
             if ($newSpouse->spouse_id && $newSpouse->spouse_id !== $member->id) {
                 return response()->json(['message' => 'This family member already has a spouse selected.'], 422);
             }
         }
 
-        DB::transaction(function () use ($member, $validated, $newSpouseId) {
-            if ($member->spouse_id && $member->spouse_id !== $newSpouseId) {
-                FamilyMember::whereKey($member->spouse_id)->where('spouse_id', $member->id)->update(['spouse_id' => null]);
+        $this->storeProfileImage($request, $validated);
+
+        DB::transaction(function () use ($member, $validated, $newSpouseId, $oldSpouseId) {
+            if ($oldSpouseId && $oldSpouseId !== $newSpouseId) {
+                FamilyMember::whereKey($oldSpouseId)->where('spouse_id', $member->id)->update(['spouse_id' => null]);
             }
 
             $member->update($validated);
 
-            if ($newSpouseId) {
+            if ($newSpouseId && $newSpouseId !== $oldSpouseId) {
                 FamilyMember::whereKey($newSpouseId)->update(['spouse_id' => $member->id]);
             }
         });

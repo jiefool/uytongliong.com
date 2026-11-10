@@ -33,31 +33,34 @@ Route::get('/newsletters', [NewsletterController::class, 'publicIndex'])->name('
 Route::middleware('auth')->group(function () {
     Route::view('/family-tree', 'family-tree')->name('family-tree');
     Route::view('/family-tree/tree', 'family-tree-tree')->name('family-tree.tree-view');
-    Route::get('/message-to-next-generations', [GenerationalMessageController::class, 'index'])->name('message-to-next-generations');
-    Route::post('/message-to-next-generations', [GenerationalMessageController::class, 'store'])->name('generational-messages.store');
-    Route::get('/message-to-next-generations/{message}/edit', [GenerationalMessageController::class, 'edit'])->name('generational-messages.edit');
-    Route::put('/message-to-next-generations/{message}', [GenerationalMessageController::class, 'update'])->name('generational-messages.update');
-    Route::delete('/message-to-next-generations/{message}', [GenerationalMessageController::class, 'destroy'])->name('generational-messages.destroy');
     Route::post('/members', [FamilyMemberController::class, 'store'])->name('members.store');
     Route::put('/members/{member}', [FamilyMemberController::class, 'update'])->name('members.update');
-    Route::delete('/members/{member}', [FamilyMemberController::class, 'destroy'])->name('members.destroy');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/access-pins', [TreeAccessPinController::class, 'index'])->name('access-pins.index');
-    Route::post('/access-pins', [TreeAccessPinController::class, 'store'])->name('access-pins.store');
-    Route::delete('/access-pins/{accessPin}', [TreeAccessPinController::class, 'destroy'])->name('access-pins.destroy');
-    Route::get('/events/manage', [ClanEventController::class, 'index'])->name('events.index');
-    Route::post('/events', [ClanEventController::class, 'store'])->name('events.store');
-    Route::get('/events/{event}/edit', [ClanEventController::class, 'edit'])->name('events.edit');
-    Route::put('/events/{event}', [ClanEventController::class, 'update'])->name('events.update');
-    Route::delete('/events/{event}', [ClanEventController::class, 'destroy'])->name('events.destroy');
-    Route::post('/events/{event}/rsvp', [ClanEventController::class, 'rsvp'])->name('events.rsvp');
 
-    Route::get('/newsletters/manage', [NewsletterController::class, 'index'])->name('newsletters.index');
-    Route::get('/newsletters/create', [NewsletterController::class, 'create'])->name('newsletters.create');
-    Route::post('/newsletters', [NewsletterController::class, 'store'])->name('newsletters.store');
-    Route::get('/newsletters/{newsletter}/edit', [NewsletterController::class, 'edit'])->name('newsletters.edit');
-    Route::put('/newsletters/{newsletter}', [NewsletterController::class, 'update'])->name('newsletters.update');
-    Route::delete('/newsletters/{newsletter}', [NewsletterController::class, 'destroy'])->name('newsletters.destroy');
+    Route::middleware('site.content')->group(function () {
+        Route::get('/message-to-next-generations', [GenerationalMessageController::class, 'index'])->name('message-to-next-generations');
+        Route::post('/message-to-next-generations', [GenerationalMessageController::class, 'store'])->name('generational-messages.store');
+        Route::get('/message-to-next-generations/{message}/edit', [GenerationalMessageController::class, 'edit'])->name('generational-messages.edit');
+        Route::put('/message-to-next-generations/{message}', [GenerationalMessageController::class, 'update'])->name('generational-messages.update');
+        Route::delete('/message-to-next-generations/{message}', [GenerationalMessageController::class, 'destroy'])->name('generational-messages.destroy');
+        Route::delete('/members/{member}', [FamilyMemberController::class, 'destroy'])->name('members.destroy');
+        Route::get('/access-pins', [TreeAccessPinController::class, 'index'])->name('access-pins.index');
+        Route::post('/access-pins', [TreeAccessPinController::class, 'store'])->name('access-pins.store');
+        Route::delete('/access-pins/{accessPin}', [TreeAccessPinController::class, 'destroy'])->name('access-pins.destroy');
+        Route::get('/events/manage', [ClanEventController::class, 'index'])->name('events.index');
+        Route::post('/events', [ClanEventController::class, 'store'])->name('events.store');
+        Route::get('/events/{event}/edit', [ClanEventController::class, 'edit'])->name('events.edit');
+        Route::put('/events/{event}', [ClanEventController::class, 'update'])->name('events.update');
+        Route::delete('/events/{event}', [ClanEventController::class, 'destroy'])->name('events.destroy');
+        Route::post('/events/{event}/rsvp', [ClanEventController::class, 'rsvp'])->name('events.rsvp');
+
+        Route::get('/newsletters/manage', [NewsletterController::class, 'index'])->name('newsletters.index');
+        Route::get('/newsletters/create', [NewsletterController::class, 'create'])->name('newsletters.create');
+        Route::post('/newsletters', [NewsletterController::class, 'store'])->name('newsletters.store');
+        Route::get('/newsletters/{newsletter}/edit', [NewsletterController::class, 'edit'])->name('newsletters.edit');
+        Route::put('/newsletters/{newsletter}', [NewsletterController::class, 'update'])->name('newsletters.update');
+        Route::delete('/newsletters/{newsletter}', [NewsletterController::class, 'destroy'])->name('newsletters.destroy');
+    });
 
     Route::middleware('admin')->group(function () {
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');

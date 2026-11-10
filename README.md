@@ -11,6 +11,10 @@
 
 The family tree has a dedicated illustrated view at `/family-tree/tree` (or `/view/tree` for family PIN viewers). Open **View living tree** from the existing diagram. Ancestors sit at the base; each recorded parent group has a branch leading to its children, with spouses placed side by side. Scroll through the tree, use the zoom controls from 50% to 200%, search by name, or select a portrait to inspect family ties.
 
+## Family Admin role
+
+Admins can assign **Family Admin** in User Management. New self-registered accounts receive this role. Family Admins can add family members and edit only records they personally added, including members linked to existing parents. They cannot delete members, manage users, access PIN management, or manage other site content. Linking a new or edited member as a spouse is limited to records that Family Admin also added, because spouse links update both records. Existing family member records remain editable by Admins and Secretariats. Run `php artisan migrate` to add creator tracking to existing databases.
+
 ## Clan event management
 
 - Browse the public calendar at `/events`, with search, date/status filters, and event details.
