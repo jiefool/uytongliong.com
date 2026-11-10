@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Tree Access | Uy Tong Liong</title>
+    <title>Family Tree Access | Uy Tong Liong - Loo Siok Tin</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="auth-page">
     <main class="auth-card">
-        <div class="auth-brand"><span>家</span> Uy Tong Liong</div>
+        <div class="auth-brand"><span>家</span> Uy Tong Liong - Loo Siok Tin</div>
         <p class="eyebrow">FAMILY TREE ACCESS</p>
         <h1>Welcome, family.</h1>
         <p class="auth-copy">Enter the six-digit access PIN shared with you by Uy Tong Liong.</p>

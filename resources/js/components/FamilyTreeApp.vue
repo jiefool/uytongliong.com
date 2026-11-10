@@ -368,15 +368,15 @@ watch(members, () => nextTick(renderFamilyGraph), { deep: true });
 <template>
     <main class="shell">
         <header class="hero">
-            <div class="brand"><span class="brand-mark">家</span> Uy Tong Liong</div>
+            <div class="brand"><span class="brand-mark">家</span> Uy Tong Liong - Loo Siok Tin</div>
             <div class="hero-copy">
-                <p class="eyebrow">UY TONG LIONG · 家</p>
+                <p class="eyebrow">UY TONG LIONG - LOO SIOK TIN · 家</p>
                 <h1>Honoring our roots,<br><em>growing our legacy.</em></h1>
                 <p>A living record of the Uy Tong Liong family, across every generation.</p>
             </div>
             <nav class="header-menu" aria-label="Clan navigation">
                 <a v-if="isAdmin" href="/users"><span>管</span> Manage users</a>
-                <template v-if="!isPinViewer"><a href="/events"><span>慶</span> Clan events</a><a href="/access-pins"><span>鑰</span> View access PINs</a><a class="header-message-link" href="/message-to-next-generations"><span>傳</span> Message to Next Generations</a><form method="POST" action="/logout"><input name="_token" type="hidden" :value="csrfToken"><button type="submit">Sign out</button></form></template>
+                <template v-if="!isPinViewer"><a href="/events"><span>慶</span> Clan events</a><a href="/newsletters"><span>書</span> Newsletters</a><a href="/access-pins"><span>鑰</span> View access PINs</a><a class="header-message-link" href="/message-to-next-generations"><span>傳</span> Message to Next Generations</a><form method="POST" action="/logout"><input name="_token" type="hidden" :value="csrfToken"><button type="submit">Sign out</button></form></template>
                 <template v-else><a class="header-message-link" href="/view/messages"><span>傳</span> Message to Next Generations</a><form method="POST" action="/view/leave"><input name="_token" type="hidden" :value="csrfToken"><button type="submit">Exit view</button></form></template>
             </nav>
         </header>
@@ -422,7 +422,7 @@ watch(members, () => nextTick(renderFamilyGraph), { deep: true });
             </aside>
 
             <section class="tree-panel" :class="{ 'viewer-tree-panel': isPinViewer }">
-                <div class="tree-heading"><div><p class="eyebrow">THE FAMILY TREE</p><h2>Our roots &amp; branches</h2></div><div class="tree-meta"><div class="tree-zoom-controls" aria-label="Chart zoom controls"><button type="button" aria-label="Zoom out" :disabled="chartZoom <= 0.6" @click="setChartZoom(chartZoom - 0.1)">−</button><span>{{ Math.round(chartZoom * 100) }}%</span><button type="button" aria-label="Zoom in" :disabled="chartZoom >= 1.5" @click="setChartZoom(chartZoom + 0.1)">＋</button></div><div class="member-count"><strong>{{ members.length }}</strong><span>family members</span></div><span class="live-dot">Live</span></div></div>
+                <div class="tree-heading"><div><p class="eyebrow">THE FAMILY TREE</p><h2>Our roots &amp; branches</h2></div><div class="tree-meta"><a class="tree-view-link" :href="isPinViewer ? '/view/tree' : '/family-tree/tree'">View living tree →</a><div class="tree-zoom-controls" aria-label="Chart zoom controls"><button type="button" aria-label="Zoom out" :disabled="chartZoom <= 0.6" @click="setChartZoom(chartZoom - 0.1)">−</button><span>{{ Math.round(chartZoom * 100) }}%</span><button type="button" aria-label="Zoom in" :disabled="chartZoom >= 1.5" @click="setChartZoom(chartZoom + 0.1)">＋</button></div><div class="member-count"><strong>{{ members.length }}</strong><span>family members</span></div><span class="live-dot">Live</span></div></div>
                 <div v-if="members.length" class="tree-scroll"><div ref="jointTreeRef" class="joint-tree-canvas" aria-label="Family tree diagram"></div></div>
                 <div v-else class="empty-state"><div class="empty-icon">⌘</div><h3>Your family story starts here.</h3><p>Add your first family member to watch the tree take shape.</p></div>
             </section>

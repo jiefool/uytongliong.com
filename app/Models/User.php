@@ -68,4 +68,9 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function newsletters(): HasMany
+    {
+        return $this->hasMany(Newsletter::class);
+    }
 }

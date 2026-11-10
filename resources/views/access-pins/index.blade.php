@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Access PINs | Uy Tong Liong</title>
+    <title>View Access PINs | Uy Tong Liong - Loo Siok Tin</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="message-page">

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GenerationalMessage extends Model
 {
-    protected $fillable = ['title', 'body', 'from_name', 'user_id'];
+    protected $fillable = ['title', 'body', 'from_name', 'user_id', 'video_path'];
 
     public function author(): BelongsTo
     {

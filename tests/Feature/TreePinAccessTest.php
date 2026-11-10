@@ -27,7 +27,16 @@ class TreePinAccessTest extends TestCase
 
         $this->post('/view', ['pin' => '123456'])->assertRedirect('/view/family-tree');
         $this->get('/view/family-tree')->assertOk();
+        $this->get('/view/tree')->assertOk()->assertSee('Tree View');
         $this->get('/members')->assertOk();
         $this->get('/view/messages')->assertOk()->assertSee('Our family promise')->assertDontSee('Add to the archive');
+    }
+
+    public function test_tree_view_requires_sign_in_or_pin_access(): void
+    {
+        $this->get('/family-tree/tree')->assertRedirect('/login');
+        $this->get('/view/tree')->assertRedirect('/view');
+
+        $this->actingAs(User::factory()->create())->get('/family-tree/tree')->assertOk()->assertSee('tree-view-app');
     }
 }
